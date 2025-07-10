@@ -7,7 +7,9 @@ import {
   registerValidation,
   loginValidation,
   refreshTokenValidation,
+  updateMeValidation,
 } from "../validation/authValidation";
+import { updatePostValidation } from "../validation/postValidation";
 
 const router = Router();
 const authController = new AuthController();
@@ -32,6 +34,8 @@ router.post(
   validationMiddleware,
   authController.refreshToken
 );
-router.get("/profile", authMiddleware, authController.profile);
+router.get("/me", authMiddleware, authController.me);
+router.put("/me", authMiddleware, updateMeValidation, authController.updateMe);
+router.post("/logout", authController.logout);
 
 export default router;

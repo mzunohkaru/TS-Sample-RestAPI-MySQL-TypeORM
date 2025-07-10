@@ -8,7 +8,7 @@ export class AuthService {
   private userRepository = AppDataSource.getRepository(User);
 
   public async register(
-    userData: AuthRequest & { name: string },
+    userData: AuthRequest & { name: string }
   ): Promise<AuthResponse> {
     const existingUser = await this.userRepository.findOne({
       where: { email: userData.email },
@@ -58,7 +58,7 @@ export class AuthService {
 
     const isPasswordValid = await PasswordUtil.comparePassword(
       credentials.password,
-      user.password,
+      user.password
     );
 
     if (!isPasswordValid) {
@@ -85,7 +85,7 @@ export class AuthService {
   }
 
   public async refreshToken(
-    refreshToken: string,
+    refreshToken: string
   ): Promise<{ access_token: string }> {
     try {
       const payload = JwtUtil.verifyRefreshToken(refreshToken);
@@ -113,7 +113,7 @@ export class AuthService {
     }
   }
 
-  public async getUserProfile(userId: number): Promise<Omit<User, "password">> {
+  public async getUserMe(userId: number): Promise<Omit<User, "password">> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
     });
@@ -124,5 +124,25 @@ export class AuthService {
 
     const { password, ...userProfile } = user;
     return userProfile;
+  }
+
+  public async updateUserMe(
+    userId: number,
+    updateData: { name?: string; age?: number }
+  ): Promise<Omit<User, "password" | "createdAt" | "updatedAt">> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    if (updateData.name) user.name = updateData.name;
+    if (updateData.age) user.age = updateData.age;
+
+    const updatedUser = await this.userRepository.save(user);
+
+    return updatedUser;
   }
 }

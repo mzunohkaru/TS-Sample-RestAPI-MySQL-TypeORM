@@ -71,9 +71,9 @@ export class AuthController {
     }
   };
 
-  public profile = async (
+  public me = async (
     req: AuthenticatedRequest,
-    res: Response,
+    res: Response
   ): Promise<void> => {
     try {
       if (!req.user) {
@@ -84,20 +84,78 @@ export class AuthController {
         return;
       }
 
-      const userProfile = await this.authService.getUserProfile(
-        req.user.userId,
+      const userMe = await this.authService.getUserMe(
+        req.user.userId
       );
 
       res.json({
         success: true,
         message: "Profile retrieved successfully",
-        data: userProfile,
+        data: userMe,
       });
     } catch (error) {
       res.status(404).json({
         success: false,
         message:
           error instanceof Error ? error.message : "Failed to retrieve profile",
+      });
+    }
+  };
+
+  public updateMe = async (
+    req: AuthenticatedRequest,
+    res: Response
+  ): Promise<void> => {
+    try {
+      if (!req.user) {
+        res.status(401).json({
+          success: false,
+          message: "User not authenticated",
+        });
+        return;
+      }
+
+      const { name, age } = req.body;
+
+      // nameかageの少なくとも1つが必要
+      if (!name && age === undefined) {
+        res.status(400).json({
+          success: false,
+          message: "At least one field (name or age) is required",
+        });
+        return;
+      }
+
+      // 更新するデータを準備
+      const updateData: { name?: string; age?: number } = {};
+      if (name !== undefined) updateData.name = name;
+      if (age !== undefined) updateData.age = age;
+
+      const result = await this.authService.updateUserMe(
+        req.user.userId,
+        updateData
+      );
+
+      res.json({
+        success: true,
+        message: "Profile updated successfully",
+        data: result,
+      });
+    } catch (error) {
+      res.status(400).json({
+        success: false,
+        message: "Failed to update profile",
+      });
+    }
+  };
+
+  public logout = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { refresh_token } = req.body;
+    } catch (error) {
+      res.status(401).json({
+        success: false,
+        message: "Logout failed",
       });
     }
   };

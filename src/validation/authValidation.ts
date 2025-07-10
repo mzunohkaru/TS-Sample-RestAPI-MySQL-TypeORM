@@ -18,6 +18,16 @@ export const registerValidation = [
     ),
 ];
 
+export const updateMeValidation = [
+  body("name")
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage("Name must be between 2 and 100 characters"),
+  body("age")
+    .isInt({ min: 0, max: 200 })
+    .withMessage("Age must be between 0 and 100"),
+];
+
 export const loginValidation = [
   body("email")
     .isEmail()
