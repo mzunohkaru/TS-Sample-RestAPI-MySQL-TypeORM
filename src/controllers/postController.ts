@@ -11,7 +11,7 @@ export class PostController {
   }
 
   getAllPosts = asyncHandler(
-    async (req: Request, res: Response): Promise<void> => {
+    async (req: AuthenticatedRequest, res: Response): Promise<void> => {
       const posts = await this.postService.getAllPosts();
       res.status(200).json({
         success: true,
@@ -23,7 +23,7 @@ export class PostController {
   );
 
   getPostById = asyncHandler(
-    async (req: Request, res: Response): Promise<void> => {
+    async (req: AuthenticatedRequest, res: Response): Promise<void> => {
       const { id } = req.params;
       const post = await this.postService.getPostById(id);
       res.status(200).json({

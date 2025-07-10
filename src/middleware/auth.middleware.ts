@@ -43,3 +43,34 @@ export const authMiddleware = (
     return;
   }
 };
+
+export const optionalAuthMiddleware = (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+): void => {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      next();
+      return;
+    }
+
+    const token = authHeader.substring(7);
+
+    try {
+      const payload = JwtUtil.verifyAccessToken(token);
+      req.user = payload;
+      next();
+    } catch (error) {
+      next();
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+    return;
+  }
+};
