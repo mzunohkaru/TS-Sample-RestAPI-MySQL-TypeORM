@@ -1,0 +1,53 @@
+{
+  "name": "ts-sample-restapi-mysql-typeorm-docker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "nodemon --exec ts-node src/index.ts",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "db:generate": "npm run typeorm -- migration:generate src/migration/Migration -d src/data-source.ts",
+    "db:run": "npm run typeorm -- migration:run -d src/data-source.ts",
+    "db:revert": "npm run typeorm -- migration:revert -d src/data-source.ts",
+    "db:seed": "ts-node src/seed.ts",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "format": "prettier --write \"src/**/*.{js,ts,json}\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.0.12",
+    "@types/supertest": "^6.0.3",
+    "jest": "^30.0.4",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.6.2",
+    "sqlite3": "^5.1.7",
+    "supertest": "^7.1.3",
+    "ts-jest": "^29.4.0",
+    "ts-node": "^10.9.2",
+    "typeorm": "^0.3.25",
+    "typescript": "^5.8.3"
+  },
+  "description": "",
+  "dependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.1",
+    "express-validator": "^7.2.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
